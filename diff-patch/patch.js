@@ -10,7 +10,7 @@ function __main() {
 
   var patched,
     opt = process.argv[2].split('.'),
-    name = opt[0] + '.patched.' + opt[1];
+    name = opt[0] + '.patched.' + opt[1],
     source = fs.readFileSync(process.argv[2], "utf8"),
     patch = fs.readFileSync(process.argv[3], "utf8");
 
