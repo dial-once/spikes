@@ -19,7 +19,7 @@ function __main() {
     console.log('   diff by word');
   }
 
-  if (process.argv.length != 5) {
+  if (process.argv.length < 5) {
     console.log('Usage: node diff.js [option] [file1] [file2]');
     process.exit(0);
   }
@@ -38,24 +38,28 @@ function __main() {
       var patch = jsdiff.createTwoFilesPatch(fileV1, fileV2, strV1, strV2, headerV1, headerV2);
       console.log('patch length:', patch.length);
 
-      fs.writeFile(fileV1 + 'to' + fileV2 + '.patch', patch, function (err) {
-        if (err) console.log();
-        else console.log('v1tov2.patch patch file was created successfully');
-        process.exit(0);
-      });
+      if (process.argv[5] === '-f') {
+        fs.writeFile(fileV1 + 'to' + fileV2 + '.patch', patch, function (err) {
+          if (err) console.log();
+          else console.log('v1tov2.patch patch file was created successfully');
+          process.exit(0);
+        });
+      } else {
+        console.log(patch);
+      }
       return;
       break;
     case '-c':
-      diff = jsdiff.diffChars(fileV1, fileV2);
+      diff = jsdiff.diffChars(strV1, strV2);
       break;
     case '-j':
-      diff = jsdiff.diffJson(fileV1, fileV2);
+      diff = jsdiff.diffJson(JSON.parse(strV1), JSON.parse(strV2));
       break;
     case '-l':
-      diff = jsdiff.diffLines(fileV1, fileV2);
+      diff = jsdiff.diffLines(strV1, strV2);
       break;
     case '-w':
-      diff = jsdiff.diffWords(fileV1, fileV2);
+      diff = jsdiff.diffWords(strV1, strV2);
       break;
   }
 
