@@ -57,7 +57,7 @@ function createAsyncTask(fileName, jsonString) {
   };
 }
 
-function unixDiff(type, jsonV1, jsonV2) {
+function unixDiff(jsonV1, jsonV2) {
   var fileV1 = uuid.v4(),
     fileV2 = uuid.v4(),
     tasks = [];
@@ -84,11 +84,6 @@ function unixDiff(type, jsonV1, jsonV2) {
       diffCmd.on('close', function () {
         cmd = 'rm ' + fileV1 + ' ' + fileV2;
         spawn('bash', ['-c', cmd]);
-        if (type === 'substring') {
-          diff = diff.substring(diff.indexOf("@"));
-        } else if (type === 'split-slice-joint') {
-          diff = diff.split('\n').slice(2).join('\n');
-        }
         resolve(diff);
       });
 
@@ -100,24 +95,24 @@ function unixDiff(type, jsonV1, jsonV2) {
   });
 }
 
-suite.add('substring', function () {
-  unixDiff('substring', fs.readFileSync(process.argv[2], 'utf8'), fs.readFileSync(process.argv[3], 'utf8'))
-  .then(function (patch) {
-    // console.log(patch);
-  });
-})
-.add('split-slice-join', function () {
-  unixDiff('split-slice-join', fs.readFileSync(process.argv[2], 'utf8'), fs.readFileSync(process.argv[3], 'utf8'))
-  .then(function (patch) {
-    // console.log(patch);
-  });
-})
-// add listeners
-.on('cycle', function(event) {
-  console.log(String(event.target));
-})
-.on('complete', function() {
-  console.log('Fastest is ' + this.filter('fastest').pluck('name'));
-})
-// run async
-.run({ 'async': true });
+unixDiff('substring', fs.readFileSync(process.argv[2], 'utf8'), fs.readFileSync(process.argv[3], 'utf8'))
+.then(function (patch) {
+  suite.add('substring', function () {
+    var tmpPatch = patch;
+    tmpPatch = tmpPatch.substring(tmpPatch.indexOf('@'));
+  })
+  .add('split-slice-join', function () {
+    var tmpPatch = patch;
+    tmpPatch = tmpPatch.split('\n').slice(2).join('\n');
+  })
+  // add listeners
+  .on('cycle', function(event) {
+    console.log(String(event.target));
+  })
+  .on('complete', function() {
+    console.log('Fastest is ' + this.filter('fastest').pluck('name'));
+  })
+  // run async
+  .run({ 'async': true });
+});
+
