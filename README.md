@@ -1,3 +1,3 @@
-# Dialonce-mvp
+# Dialonce Spikes
 
-Dialonce-mvo is a private git repository used to share Minimum viable product.
+Dialonce Spikes is used to store our... spikes :D
