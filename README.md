@@ -1,3 +1,3 @@
-# Dialonce Spikes
+# Dial Once Spikes
 
-Dialonce Spikes is used to store our... spikes :D
+Dial Once Spikes is used to store our... spikes :D
